@@ -1,0 +1,2 @@
+sistem login dan register menggunanakn playfab, masukkan email bebas, tetapi jika ingin mencoba fitur reset password
+gunakan email yang benar-benar ada agar reset password dikirim ke inbox
