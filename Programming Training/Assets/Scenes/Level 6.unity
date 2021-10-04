@@ -161,7 +161,7 @@ Transform:
   - {fileID: 1675227492}
   - {fileID: 2012844466}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &60432642
 GameObject:
@@ -1124,7 +1124,7 @@ GameObject:
   - component: {fileID: 584489976}
   - component: {fileID: 584489977}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: Player1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1235,7 +1235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2adc8b02536bda540b9dbc884340476b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  JumpSpeed: 1
+  jumpSpeed: 1
   jumpWithTranslate: 0
   jumpWithRigidbody: 1
   runSpeed: 10
@@ -7275,7 +7275,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthSlider: {fileID: 1141334413}
-  gameOverScreen: {fileID: 182544136}
+  screenCondition: {fileID: 0}
   maxHp: 100
 --- !u!1 &1869299475
 GameObject:
@@ -7388,7 +7388,7 @@ GameObject:
   - component: {fileID: 1941125224}
   - component: {fileID: 1941125225}
   m_Layer: 0
-  m_Name: Capsule character Controller
+  m_Name: Player2(char control)
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7487,7 +7487,7 @@ Transform:
   - {fileID: 1429174506}
   - {fileID: 1399910396}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1941125222
 MonoBehaviour:

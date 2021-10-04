@@ -1,0 +1,2 @@
+untuk animations setactive player legacy karena animations hanya support legacy
+untuk animator setactive playerhumanoid

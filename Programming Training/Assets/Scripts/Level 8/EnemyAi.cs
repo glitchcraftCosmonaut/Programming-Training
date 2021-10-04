@@ -1,8 +1,7 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyAiTutorial : MonoBehaviour
+public class EnemyAi : MonoBehaviour
 {
     public NavMeshAgent agent;
 
@@ -11,6 +10,12 @@ public class EnemyAiTutorial : MonoBehaviour
     public LayerMask whatIsGround, whatIsPlayer;
 
     public float health;
+    public HealthBar healthBar;
+
+    private Rigidbody rb;
+    private ComboAttack comboAttack;
+    Animator animator;
+
 
     //Patroling
     public Vector3 walkPoint;
@@ -18,18 +23,44 @@ public class EnemyAiTutorial : MonoBehaviour
     public float walkPointRange;
 
     //Attacking
-    public float timeBetweenAttacks;
     bool alreadyAttacked;
-    public GameObject projectile;
+    [SerializeField] bool useAttack;
+
+    //jumping
+    [SerializeField] float jumpForce = 3f;
+    public bool isGrounded;
+    Vector3 jump;
+    public float gravity = 2f;
+    Vector3 enemyVelocity;
+    [SerializeField] bool isJumping;
+    [SerializeField] bool useJump;
+    
 
     //States
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
-    private void Awake()
+    private void Start() 
     {
-        player = GameObject.Find("PlayerObj").transform;
         agent = GetComponent<NavMeshAgent>();
+        rb = GetComponent<Rigidbody>();
+        comboAttack = GetComponent<ComboAttack>();
+        animator = GetComponent<Animator>();
+    }
+    void OnCollisionStay() 
+    {
+        if(!isGrounded)
+        {
+            if (agent.enabled)
+            {
+                agent.updatePosition = true;
+                agent.updateRotation = true;
+                agent.isStopped = false;
+            }
+            rb.isKinematic = true;
+            rb.useGravity = false;
+            isGrounded = true;
+        }
     }
 
     private void Update()
@@ -41,10 +72,12 @@ public class EnemyAiTutorial : MonoBehaviour
         if (!playerInSightRange && !playerInAttackRange) Patroling();
         if (playerInSightRange && !playerInAttackRange) ChasePlayer();
         if (playerInAttackRange && playerInSightRange) AttackPlayer();
+        if (playerInAttackRange && playerInSightRange) Jump();
     }
-
+    
     private void Patroling()
     {
+        animator.SetBool("isWalking", true);
         if (!walkPointSet) SearchWalkPoint();
 
         if (walkPointSet)
@@ -71,6 +104,7 @@ public class EnemyAiTutorial : MonoBehaviour
     private void ChasePlayer()
     {
         agent.SetDestination(player.position);
+        animator.SetBool("isWalking", true);
     }
 
     private void AttackPlayer()
@@ -80,28 +114,60 @@ public class EnemyAiTutorial : MonoBehaviour
 
         transform.LookAt(player);
 
-        if (!alreadyAttacked)
+        if (!alreadyAttacked &&  useAttack == true)
         {
-            ///Attack code here
-            Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
-            rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
-            rb.AddForce(transform.up * 8f, ForceMode.Impulse);
-            ///End of attack code
-
+            comboAttack.Attack();
             alreadyAttacked = true;
-            Invoke(nameof(ResetAttack), timeBetweenAttacks);
+            Invoke(nameof(ResetAttack),0);
         }
+    }
+    private void Jump()
+    {
+
+        if(isGrounded && !isJumping && useJump)
+        {
+            jump = new Vector3(0.0f, 2.0f, 0.0f);
+            isGrounded = false;
+            if(agent.enabled)
+            {
+                agent.updatePosition = false;
+                agent.updateRotation = false;
+                agent.isStopped = true;
+            }
+            
+            rb.isKinematic = false;
+            rb.useGravity = true;
+            isJumping = true;
+            float jumping = jumpForce * gravity;
+            rb.AddForce(jump * jumping, ForceMode.Impulse);
+            animator.SetFloat("jumping", jumping);
+            Invoke(nameof(StopJump), 1.7f);
+        }
+    
+    }
+    private void StopJump()
+    {
+        isJumping = false;
+        float jumping = 0;
+        animator.SetFloat("jumping", jumping);
+
     }
     private void ResetAttack()
     {
         alreadyAttacked = false;
     }
-
-    public void TakeDamage(int damage)
+    private void OnTriggerEnter(Collider other) 
     {
-        health -= damage;
-
-        if (health <= 0) Invoke(nameof(DestroyEnemy), 0.5f);
+        
+        if(other.gameObject.tag == "EnemyDamager")
+        {
+            healthBar.maxHp -= 20;
+            if(healthBar.maxHp <=0)
+            {
+                Destroy(gameObject);
+                animator.Play("Dying Backwards");
+            }
+        }
     }
     private void DestroyEnemy()
     {

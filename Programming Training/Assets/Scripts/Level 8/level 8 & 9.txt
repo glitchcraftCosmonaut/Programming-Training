@@ -1,0 +1,2 @@
+untuk menggunakan fungsi attack pada enemy centang useAttack pada component script
+untuk menggunakan fungsi jump pada enemy centang useJump pada component script

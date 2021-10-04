@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Damager
   - Healer
+  - PlayerDamager
+  - EnemyDamager
+  - Enemy
   layers:
   - Default
   - TransparentFX

@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     private Animator anim;
+    private ComboAttack comboAttack;
     private CharacterController characterController;
     private float turnSmoothTime = 0.1f;
     private float turnSmoothVelocity;
@@ -19,11 +18,13 @@ public class Player : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
+        comboAttack = GetComponent<ComboAttack>();
     }
 
     void Update()
     {
         Movement();
+        Attack();
     }
     private void Movement()
     {
@@ -74,6 +75,27 @@ public class Player : MonoBehaviour
         {
             healthBar.maxHp += 20;
             Destroy(other.gameObject);
+        }
+        if(other.gameObject.tag == "PlayerDamager")
+        {
+            healthBar.maxHp -= 40;
+            if(healthBar.maxHp <=0)
+            {
+                canMove = false;
+                anim.Play("Dying Backwards");
+            }
+        }
+    }
+    private void Attack()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            comboAttack.Attack();
+            canMove = false;
+        }
+        if(Input.GetMouseButtonUp(0))
+        {
+            canMove = true;
         }
     }
 }

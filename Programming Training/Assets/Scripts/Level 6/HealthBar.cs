@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
     public Slider healthSlider;
-    public GameObject gameOverScreen;
+    public GameObject screenCondition;
     // [HideInInspector] public float hp;
     [SerializeField] public float maxHp;
 
@@ -23,7 +21,7 @@ public class HealthBar : MonoBehaviour
         if(maxHp <= 0)
         {
             new WaitForSeconds(1f);
-            gameOverScreen.SetActive(true);
+            screenCondition.SetActive(true);
         }
     }
 
